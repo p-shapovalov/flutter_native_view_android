@@ -1,0 +1,22 @@
+name: flutter_native_view_android
+description: Flutter plugin for hosting native Android views below a transparent Flutter view.
+version: 0.1.0
+
+environment:
+  sdk: ^3.9.0
+  flutter: ">=3.35.0"
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: io.flutter.plugins.nativeview
+        pluginClass: NativeViewPlugin
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
