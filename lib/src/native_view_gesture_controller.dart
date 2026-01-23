@@ -10,10 +10,9 @@ class NativeViewGestureController {
 
   /// Enables or disables touch event dispatching to the native view.
   static Future<void> setGesturesEnabled(bool enabled) {
-    return _channel.invokeMethod<void>(
-      'setGesturesEnabled',
-      <String, dynamic>{'enabled': enabled},
-    );
+    return _channel.invokeMethod<void>('setGesturesEnabled', <String, dynamic>{
+      'enabled': enabled,
+    });
   }
 
   /// Returns whether gestures are currently enabled.
@@ -26,10 +25,9 @@ class NativeViewGestureController {
   ///
   /// Automatically released when the touch sequence ends.
   static Future<void> claimPointer(int pointerId) {
-    return _channel.invokeMethod<void>(
-      'claimPointer',
-      <String, dynamic>{'pointerId': pointerId},
-    );
+    return _channel.invokeMethod<void>('claimPointer', <String, dynamic>{
+      'pointerId': pointerId,
+    });
   }
 
   /// Releases a previously claimed pointer.
@@ -41,9 +39,8 @@ class NativeViewGestureController {
   /// so calling this is only necessary if you want to release a pointer
   /// mid-gesture.
   static Future<void> releasePointer(int pointerId) {
-    return _channel.invokeMethod<void>(
-      'releasePointer',
-      <String, dynamic>{'pointerId': pointerId},
-    );
+    return _channel.invokeMethod<void>('releasePointer', <String, dynamic>{
+      'pointerId': pointerId,
+    });
   }
 }

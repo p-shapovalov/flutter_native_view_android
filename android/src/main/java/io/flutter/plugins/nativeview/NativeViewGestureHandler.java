@@ -1,6 +1,5 @@
 package io.flutter.plugins.nativeview;
 
-import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.view.View;
 import androidx.annotation.NonNull;
@@ -26,6 +25,9 @@ public class NativeViewGestureHandler implements MethodChannel.MethodCallHandler
 
   /** Pointer IDs claimed by Flutter (not forwarded to native view). */
   private final HashSet<Integer> claimedPointers = new HashSet<>();
+
+  /** Last event dispatched to native view, used for creating cancel events. */
+  @Nullable private MotionEvent lastDispatchedEvent;
 
   public NativeViewGestureHandler(@NonNull BinaryMessenger binaryMessenger) {
     channel = new MethodChannel(binaryMessenger, CHANNEL_NAME);
@@ -56,9 +58,10 @@ public class NativeViewGestureHandler implements MethodChannel.MethodCallHandler
     int pointerIndex = event.getActionIndex();
     int pointerId = event.getPointerId(pointerIndex);
 
-    // Clean up claimed pointers when the touch sequence ends
+    // Clean up when the touch sequence ends
     if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
       claimedPointers.clear();
+      recycleLastEvent();
     } else if (action == MotionEvent.ACTION_POINTER_UP) {
       claimedPointers.remove(pointerId);
     }
@@ -73,7 +76,20 @@ public class NativeViewGestureHandler implements MethodChannel.MethodCallHandler
     }
 
     if (gesturesEnabled && targetView != null && !hasClaimedPointer) {
+      saveLastEvent(event);
       targetView.dispatchTouchEvent(event);
+    }
+  }
+
+  private void saveLastEvent(@NonNull MotionEvent event) {
+    recycleLastEvent();
+    lastDispatchedEvent = MotionEvent.obtain(event);
+  }
+
+  private void recycleLastEvent() {
+    if (lastDispatchedEvent != null) {
+      lastDispatchedEvent.recycle();
+      lastDispatchedEvent = null;
     }
   }
 
@@ -90,11 +106,12 @@ public class NativeViewGestureHandler implements MethodChannel.MethodCallHandler
 
   /** Sends a cancel event to the target view to cancel any ongoing gesture. */
   private void cancelGestureOnTargetView() {
-    if (targetView != null) {
-      long now = SystemClock.uptimeMillis();
-      MotionEvent cancelEvent = MotionEvent.obtain(now, now, MotionEvent.ACTION_CANCEL, 0, 0, 0);
+    if (targetView != null && lastDispatchedEvent != null) {
+      MotionEvent cancelEvent = MotionEvent.obtain(lastDispatchedEvent);
+      cancelEvent.setAction(MotionEvent.ACTION_CANCEL);
       targetView.dispatchTouchEvent(cancelEvent);
       cancelEvent.recycle();
+      recycleLastEvent();
     }
   }
 
@@ -102,6 +119,7 @@ public class NativeViewGestureHandler implements MethodChannel.MethodCallHandler
   public void dispose() {
     channel.setMethodCallHandler(null);
     claimedPointers.clear();
+    recycleLastEvent();
     targetView = null;
   }
 

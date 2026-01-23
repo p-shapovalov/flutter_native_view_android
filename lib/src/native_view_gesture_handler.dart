@@ -146,8 +146,7 @@ class NativeViewOverlayBody extends StatelessWidget {
     }
 
     return Listener(
-      onPointerDown:
-          _NativeViewPointerTracker.instance.onNativeViewPointerDown,
+      onPointerDown: _NativeViewPointerTracker.instance.onNativeViewPointerDown,
       behavior: HitTestBehavior.translucent,
       child: child,
     );

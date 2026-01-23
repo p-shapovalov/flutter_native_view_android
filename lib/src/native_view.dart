@@ -130,7 +130,8 @@ abstract class NativeViewWidget extends StatefulWidget {
   void onViewHidden() {}
 
   @override
-  State<NativeViewWidget> createState() => NativeViewWidgetState<NativeViewWidget>();
+  State<NativeViewWidget> createState() =>
+      NativeViewWidgetState<NativeViewWidget>();
 }
 
 /// State for [NativeViewWidget].
@@ -168,8 +169,9 @@ class NativeViewWidgetState<T extends NativeViewWidget> extends State<T> {
   /// Adds the native view to the hierarchy and shows it.
   @protected
   Future<void> addNativeView() async {
-    final bool success =
-        await NativeViewChannel.instance.addView(widget.viewKey);
+    final bool success = await NativeViewChannel.instance.addView(
+      widget.viewKey,
+    );
     if (success && mounted) {
       await showNativeView();
     }
@@ -178,8 +180,9 @@ class NativeViewWidgetState<T extends NativeViewWidget> extends State<T> {
   /// Shows the native view. Called after [addNativeView].
   @protected
   Future<void> showNativeView() async {
-    final bool success =
-        await NativeViewChannel.instance.switchToView(widget.viewKey);
+    final bool success = await NativeViewChannel.instance.switchToView(
+      widget.viewKey,
+    );
     if (success && mounted) {
       setState(() {
         _isShown = true;
