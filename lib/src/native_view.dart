@@ -45,20 +45,6 @@ class NativeViewChannel {
     }
   }
 
-  /// Hides the current view and shows the view with [viewKey].
-  Future<bool> switchToView(String viewKey) async {
-    try {
-      final bool? result = await _channel.invokeMethod<bool>(
-        'switchToView',
-        <String, dynamic>{'viewKey': viewKey},
-      );
-      return result ?? false;
-    } catch (e) {
-      debugPrint('NativeViewChannel.switchToView error: $e');
-      return false;
-    }
-  }
-
   /// Gets the key of the currently active native view, or null if none.
   Future<String?> getActiveViewKey() async {
     try {
@@ -180,7 +166,7 @@ class NativeViewWidgetState<T extends NativeViewWidget> extends State<T> {
   /// Shows the native view. Called after [addNativeView].
   @protected
   Future<void> showNativeView() async {
-    final bool success = await NativeViewChannel.instance.switchToView(
+    final bool success = await NativeViewChannel.instance.showView(
       widget.viewKey,
     );
     if (success && mounted) {

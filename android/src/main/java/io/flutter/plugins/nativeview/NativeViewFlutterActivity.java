@@ -87,26 +87,6 @@ public abstract class NativeViewFlutterActivity extends FlutterActivity
     return true;
   }
 
-  /** Hides current view and shows the view with the given key. */
-  public boolean switchToView(@NonNull String key) {
-    NativeView newView = nativeViews.get(key);
-    if (newView == null) {
-      return false;
-    }
-
-    if (activeViewKey != null && !activeViewKey.equals(key)) {
-      NativeView currentView = nativeViews.get(activeViewKey);
-      if (currentView != null) {
-        currentView.hide();
-      }
-    }
-
-    activeViewKey = key;
-    newView.show();
-    updateGestureHandlerTarget(newView);
-    return true;
-  }
-
   /**
    * Updates the gesture handler's target view.
    *
@@ -274,14 +254,6 @@ public abstract class NativeViewFlutterActivity extends FlutterActivity
         viewKey = call.argument("viewKey");
         if (viewKey != null) {
           result.success(hideView(viewKey));
-        } else {
-          result.error("INVALID_ARGUMENT", "viewKey is required", null);
-        }
-        break;
-      case "switchToView":
-        viewKey = call.argument("viewKey");
-        if (viewKey != null) {
-          result.success(switchToView(viewKey));
         } else {
           result.error("INVALID_ARGUMENT", "viewKey is required", null);
         }
