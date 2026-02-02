@@ -81,10 +81,37 @@ public abstract class NativeViewFlutterActivity extends FlutterActivity
     }
     view.hide();
     if (key.equals(activeViewKey)) {
-      activeViewKey = null;
-      updateGestureHandlerTarget(null);
+      activateTopmostVisibleView();
     }
     return true;
+  }
+
+  /** Finds and activates the topmost visible view, or clears active if none found. */
+  private void activateTopmostVisibleView() {
+    if (nativeViewContainer == null) {
+      activeViewKey = null;
+      updateGestureHandlerTarget(null);
+      return;
+    }
+
+    // Iterate from top to bottom (last child is topmost)
+    for (int i = nativeViewContainer.getChildCount() - 1; i >= 0; i--) {
+      View child = nativeViewContainer.getChildAt(i);
+      if (child.getVisibility() == View.VISIBLE) {
+        // Find the NativeView for this child
+        for (Map.Entry<String, NativeView> entry : nativeViews.entrySet()) {
+          if (entry.getValue().getView() == child) {
+            activeViewKey = entry.getKey();
+            updateGestureHandlerTarget(entry.getValue());
+            return;
+          }
+        }
+      }
+    }
+
+    // No visible view found
+    activeViewKey = null;
+    updateGestureHandlerTarget(null);
   }
 
   /**
@@ -156,9 +183,7 @@ public abstract class NativeViewFlutterActivity extends FlutterActivity
       return false;
     }
 
-    if (key.equals(activeViewKey)) {
-      activeViewKey = null;
-    }
+    boolean wasActive = key.equals(activeViewKey);
 
     View view = nativeView.getView();
     if (view != null && nativeViewContainer != null) {
@@ -166,6 +191,11 @@ public abstract class NativeViewFlutterActivity extends FlutterActivity
     }
 
     nativeView.dispose();
+
+    if (wasActive) {
+      activateTopmostVisibleView();
+    }
+
     return true;
   }
 
