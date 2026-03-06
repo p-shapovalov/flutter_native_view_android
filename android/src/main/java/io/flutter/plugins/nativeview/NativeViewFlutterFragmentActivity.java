@@ -6,17 +6,20 @@ import android.view.MotionEvent;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Lifecycle;
-import io.flutter.embedding.android.FlutterActivity;
-import io.flutter.embedding.android.TransparencyMode;
+import io.flutter.embedding.android.FlutterActivityLaunchConfigs.BackgroundMode;
+import io.flutter.embedding.android.FlutterFragmentActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import java.util.function.Supplier;
 
 /**
- * FlutterActivity that hosts native views below a transparent Flutter view.
+ * FlutterFragmentActivity that hosts native views below a transparent Flutter view.
+ *
+ * <p>This is the FragmentActivity variant of {@link NativeViewFlutterActivity}, for use when
+ * AppCompat or other AndroidX fragment features are needed.
  *
  * <p>Views are created on demand via method channel "plugins.flutter.dev/native_view_flutter_activity".
  */
-public abstract class NativeViewFlutterActivity extends FlutterActivity
+public abstract class NativeViewFlutterFragmentActivity extends FlutterFragmentActivity
     implements NativeViewDelegate.Host {
 
   private final NativeViewDelegate delegate = new NativeViewDelegate(this);
@@ -115,8 +118,8 @@ public abstract class NativeViewFlutterActivity extends FlutterActivity
 
   @NonNull
   @Override
-  public TransparencyMode getTransparencyMode() {
-    return TransparencyMode.transparent;
+  protected BackgroundMode getBackgroundMode() {
+    return BackgroundMode.transparent;
   }
 
   @Override
