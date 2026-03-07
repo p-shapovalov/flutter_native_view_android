@@ -1,11 +1,11 @@
 package com.example.flutter_native_view_android_example;
 
-import io.flutter.plugins.nativeview.NativeViewFlutterActivity;
+import io.flutter.plugins.nativeview.NativeViewFlutterFragmentActivity;
 
 /**
  * Main activity that hosts native views below a transparent Flutter view.
  */
-public class MainActivity extends NativeViewFlutterActivity {
+public class MainActivity extends NativeViewFlutterFragmentActivity {
 
     @Override
     protected void onRegisterNativeViews() {

@@ -93,6 +93,7 @@ public abstract class NativeViewFlutterActivity extends FlutterActivity
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    onRegisterNativeViews();
     delegate.onCreate();
   }
 

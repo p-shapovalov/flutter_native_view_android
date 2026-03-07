@@ -96,6 +96,7 @@ public abstract class NativeViewFlutterFragmentActivity extends FlutterFragmentA
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    onRegisterNativeViews();
     delegate.onCreate();
   }
 
